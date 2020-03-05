@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class EmployeeRecordController {
@@ -26,5 +28,10 @@ public class EmployeeRecordController {
         } catch (EmployeeNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee ID: " + employeeId + " was not found", e);
         }
+    }
+
+    @GetMapping("/getEmployee")
+    public List<Employee> getEmployeeByEmail(@RequestHeader("employeeEmail") String employeeEmail){
+        return employeeRecordService.findEmployeeByEmail(employeeEmail);
     }
 }

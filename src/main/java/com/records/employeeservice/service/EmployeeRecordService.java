@@ -9,6 +9,7 @@ import lombok.ToString;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class EmployeeRecordService {
         return employeeRepository.findEmployeeById(employeeId);
     }
 
-    public Employee findEmployeeByEmail(String employeeEmail) {
+    public List<Employee> findEmployeeByEmail(String employeeEmail) {
         return employeeRepository.findEmployeeByEmail(employeeEmail);
     }
 }
