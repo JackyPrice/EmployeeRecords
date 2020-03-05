@@ -26,12 +26,16 @@ public class EmployeeRecordController {
         try {
             return employeeRecordService.findEmployeeById(employeeId);
         } catch (EmployeeNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee ID: " + employeeId + " was not found", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Error: Employee ID " + employeeId + " was not found", e);
         }
     }
 
     @GetMapping("/getEmployee")
     public List<Employee> getEmployeeByEmail(@RequestHeader("employeeEmail") String employeeEmail){
+        try {
         return employeeRecordService.findEmployeeByEmail(employeeEmail);
+        } catch (EmployeeNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Error: Employee Email " + employeeEmail + " was not found", e);
+        }
     }
 }

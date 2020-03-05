@@ -11,5 +11,5 @@ public interface EmployeeRepository {
 
     Employee findEmployeeById(Integer employeeId) throws EmployeeNotFoundException;
 
-    List<Employee> findEmployeeByEmail(String employeeEmail);
+    List<Employee> findEmployeeByEmail(String employeeEmail) throws EmployeeNotFoundException;
 }

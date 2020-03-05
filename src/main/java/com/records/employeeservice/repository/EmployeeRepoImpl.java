@@ -52,17 +52,23 @@ public class EmployeeRepoImpl implements EmployeeRepository {
     }
 
     @Override
-    public List<Employee> findEmployeeByEmail(String employeeEmail) {
-        return mySQLRepository.findEmployeeEntityByEmailAddress(employeeEmail)
-                .stream()
-                .map(employeeEntity -> Employee.builder()
-                        .name(employeeEntity.getName())
-                        .age(employeeEntity.getAge())
-                        .emailAddress(employeeEntity.getEmailAddress())
-                        .salary(employeeEntity.getSalary())
-                        .role(employeeEntity.getRole())
-                        .dateOfEnrollment(employeeEntity.getDateOfEnrollment())
-                        .build())
-                .collect(Collectors.toList());
+    public List<Employee> findEmployeeByEmail(String employeeEmail) throws EmployeeNotFoundException {
+        List<Employee> employeeList =
+                mySQLRepository.findEmployeeEntityByEmailAddress(employeeEmail)
+                        .stream()
+                        .map(employeeEntity -> Employee.builder()
+                                .name(employeeEntity.getName())
+                                .age(employeeEntity.getAge())
+                                .emailAddress(employeeEntity.getEmailAddress())
+                                .salary(employeeEntity.getSalary())
+                                .role(employeeEntity.getRole())
+                                .dateOfEnrollment(employeeEntity.getDateOfEnrollment())
+                                .build())
+                        .collect(Collectors.toList());
+        if (employeeList.isEmpty()) {
+            throw new EmployeeNotFoundException();
+        } else {
+            return employeeList;
+        }
     }
 }

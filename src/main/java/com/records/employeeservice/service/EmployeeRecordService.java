@@ -39,7 +39,7 @@ public class EmployeeRecordService {
         return employeeRepository.findEmployeeById(employeeId);
     }
 
-    public List<Employee> findEmployeeByEmail(String employeeEmail) {
+    public List<Employee> findEmployeeByEmail(String employeeEmail) throws EmployeeNotFoundException {
         return employeeRepository.findEmployeeByEmail(employeeEmail);
     }
 }
