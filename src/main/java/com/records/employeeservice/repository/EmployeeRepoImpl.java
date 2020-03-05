@@ -18,36 +18,16 @@ public class EmployeeRepoImpl implements EmployeeRepository {
 
     private final MySQLRepository mySQLRepository;
 
-    private String reformatRole(String role) {
-        return Role.valueOf(role).role;
-    }
-
     @Override
-    public Employee save(Employee employee) {
-        EmployeeEntity employeeEntity = EmployeeEntity.builder()
-                .name(employee.getName())
-                .age(employee.getAge())
-                .emailAddress(employee.getEmailAddress())
-                .salary(employee.getSalary())
-                .role(reformatRole(employee.getRole()))
-                .dateOfEnrollment(employee.getDateOfEnrollment())
-                .build();
-        EmployeeEntity savedEmployee = mySQLRepository.save(employeeEntity);
-        return employee;
+    public EmployeeEntity save(Employee employee) {
+        return mySQLRepository.save(convertToEmployeeEntity(employee));
     }
 
     @Override
     public Employee findEmployeeById(Integer employeeId) throws EmployeeNotFoundException {
         return mySQLRepository
                 .findById(employeeId)
-                .map(employeeEntity -> Employee.builder()
-                        .name(employeeEntity.getName())
-                        .age(employeeEntity.getAge())
-                        .emailAddress(employeeEntity.getEmailAddress())
-                        .salary(employeeEntity.getSalary())
-                        .role(employeeEntity.getRole())
-                        .dateOfEnrollment(employeeEntity.getDateOfEnrollment())
-                        .build())
+                .map(employeeEntity -> convertToEmployee(employeeEntity))
                 .orElseThrow(() -> new EmployeeNotFoundException());
     }
 
@@ -56,19 +36,38 @@ public class EmployeeRepoImpl implements EmployeeRepository {
         List<Employee> employeeList =
                 mySQLRepository.findEmployeeEntityByEmailAddress(employeeEmail)
                         .stream()
-                        .map(employeeEntity -> Employee.builder()
-                                .name(employeeEntity.getName())
-                                .age(employeeEntity.getAge())
-                                .emailAddress(employeeEntity.getEmailAddress())
-                                .salary(employeeEntity.getSalary())
-                                .role(employeeEntity.getRole())
-                                .dateOfEnrollment(employeeEntity.getDateOfEnrollment())
-                                .build())
+                        .map(employeeEntity -> convertToEmployee(employeeEntity))
                         .collect(Collectors.toList());
         if (employeeList.isEmpty()) {
             throw new EmployeeNotFoundException();
         } else {
             return employeeList;
         }
+    }
+
+    private String reformatRole(String role) {
+        return Role.valueOf(role).role;
+    }
+
+    private Employee convertToEmployee(EmployeeEntity employeeEntity) {
+        return Employee.builder()
+                .name(employeeEntity.getName())
+                .age(employeeEntity.getAge())
+                .emailAddress(employeeEntity.getEmailAddress())
+                .salary(employeeEntity.getSalary())
+                .role(employeeEntity.getRole())
+                .dateOfEnrollment(employeeEntity.getDateOfEnrollment())
+                .build();
+    }
+
+    private EmployeeEntity convertToEmployeeEntity(Employee employee) {
+        return EmployeeEntity.builder()
+                .name(employee.getName())
+                .age(employee.getAge())
+                .emailAddress(employee.getEmailAddress())
+                .salary(employee.getSalary())
+                .role(reformatRole(employee.getRole()))
+                .dateOfEnrollment(employee.getDateOfEnrollment())
+                .build();
     }
 }

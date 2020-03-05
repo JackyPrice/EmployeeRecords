@@ -1,6 +1,8 @@
 package com.records.employeeservice.service;
 
+import com.records.employeeservice.entity.EmployeeEntity;
 import com.records.employeeservice.error.EmployeeNotFoundException;
+import com.records.employeeservice.error.InvalidRoleException;
 import com.records.employeeservice.model.Employee;
 import com.records.employeeservice.model.Role;
 import com.records.employeeservice.repository.EmployeeRepository;
@@ -18,20 +20,18 @@ public class EmployeeRecordService {
 
     private final EmployeeRepository employeeRepository;
 
-    private boolean isValidRole(String role) {
+    private boolean isValidRole(String role) throws InvalidRoleException {
         try {
             Role.valueOf(role);
             return true;
-        }catch(IllegalArgumentException e){
-            return false;
+        } catch (IllegalArgumentException e) {
+            throw new InvalidRoleException("INVALID ROLE: " + role + " is not a valid entry. Please select from: " + Arrays.asList(Role.values()));
         }
     }
 
-    public void saveEmployee(Employee employee) throws Exception {
+    public void saveEmployee(Employee employee) throws InvalidRoleException {
         if (isValidRole(employee.getRole())) {
-            Employee save = employeeRepository.save(employee);
-        } else {
-            throw new Exception("INVALID ROLE: " +  employee.getRole() + " is not a valid entry. Please select from: " + Arrays.asList(Role.values()));
+            EmployeeEntity save = employeeRepository.save(employee);
         }
     }
 
